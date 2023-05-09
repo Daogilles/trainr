@@ -14,7 +14,7 @@ const handler = async (
     return;
   }
 
-  const { email, password } = req.body;
+  const { email, password, username, isCoach } = req.body;
 
   if (!isEmailValid(email) || !password || password.trim().length < 7) {
     res.status(422).json({
@@ -34,13 +34,25 @@ const handler = async (
     return;
   }
 
+  const existingUsername = await db
+    .collection("users")
+    .findOne({ username: username });
+
+  if (existingUsername) {
+    res.status(422).json({ message: "Username exists already!" });
+    client.close();
+    return;
+  }
+
   const hashedPassword = await hashPassword(password);
 
   const result = await db.collection("users").insertOne({
     email: email,
     password: hashedPassword,
+    username: username,
+    isCoach: isCoach,
   });
-
+  console.log(result);
   res.status(201).json({ message: "Created user!" });
   client.close();
 };

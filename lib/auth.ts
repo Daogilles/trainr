@@ -1,9 +1,6 @@
 import { hash, compare } from "bcryptjs";
 
-const emailRegex = new RegExp(
-  /^[A-Za-z0-9_!#$%&'*+\/=?`{|}~^.-]+@[A-Za-z0-9.-]+$/,
-  "gm"
-);
+const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 
 export function isEmailValid(email: string): Boolean {
   return emailRegex.test(email);
